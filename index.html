@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Satakshi Peripherals | Admin Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+
+<style>
+/* --- KEEPING YOUR EXACT DESIGN SYSTEM --- */
+:root {
+  --primary: #f85606; /* Daraz Orange */
+  --secondary: #1a1a1a;
+  --accent: #2979ff;
+  --bg: #eff0f5;
+  --card: #ffffff;
+  --text: #212121;
+  --sub: #757575;
+  --green: #2ecc71;
+  --red: #ff4757;
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.dark-theme { 
+  --bg: #0b0f19; --card: #161b2a; --text: #f8fafc; --sub: #94a3b8; 
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; transition: background 0.3s, color 0.3s; }
+body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+/* --- PERMISSIONS LOGIC --- */
+.admin-only { display: none !important; }
+.is-admin .admin-only { display: block !important; }
+
+/* --- NAVIGATION & SEARCH --- */
+header { background: #fff; padding: 12px 20px; position: sticky; top: 0; z-index: 1000; box-shadow: var(--shadow); }
+.nav-top { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+.search-wrapper { max-width: 1200px; margin: 10px auto 0; position: relative; }
+.search-wrapper input { width: 100%; padding: 12px 45px 12px 15px; border-radius: 8px; border: 1px solid #ddd; background: #f5f5f5; font-size: 14px; }
+.search-icon { position: absolute; right: 15px; top: 12px; opacity: 0.5; }
+
+/* --- HERO BANNER --- */
+.hero-slider { margin: 15px; border-radius: 15px; height: 180px; background: linear-gradient(135deg, #003cff, #00d2ff); color: white; display: flex; align-items: center; padding: 30px; position: relative; overflow: hidden; }
+.hero-text h1 { font-size: 24px; margin: 0; font-weight: 800; line-height: 1.1; }
+.hero-text p { font-size: 12px; margin: 10px 0; opacity: 0.9; }
+.hero-circle { position: absolute; right: -50px; top: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+
+/* --- ICON CATEGORIES --- */
+.categories-container { display: flex; gap: 20px; overflow-x: auto; padding: 20px; background: #fff; scrollbar-width: none; }
+.cat-btn { flex: 0 0 70px; text-align: center; cursor: pointer; }
+.cat-img { width: 55px; height: 55px; background: var(--bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; margin: 0 auto 8px; border: 2px solid transparent; }
+.cat-btn.active .cat-img { border-color: var(--primary); background: #fff; color: var(--primary); }
+.cat-btn span { font-size: 11px; font-weight: 600; color: var(--sub); }
+
+/* --- PRODUCT GRID --- */
+.product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; max-width: 1200px; margin: 0 auto; }
+@media (min-width: 768px) { .product-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; padding: 20px; } }
+
+.product-card { background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); cursor: pointer; position: relative; }
+.product-card .img-holder { width: 100%; height: 180px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 15px; }
+.product-card img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.product-info { padding: 12px; }
+.product-info h3 { margin: 0; font-size: 14px; font-weight: 500; height: 36px; overflow: hidden; line-height: 1.3; }
+.product-price { color: var(--primary); font-size: 18px; font-weight: 700; display: block; margin-top: 8px; }
+
+/* --- DETAIL PAGE --- */
+#detail-overlay { position: fixed; top: 0; left: 100%; width: 100%; height: 100%; background: var(--bg); z-index: 5000; transition: 0.4s ease; overflow-y: auto; }
+#detail-overlay.open { left: 0; }
+
+/* --- FORMS & MODALS --- */
+.modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 9000; padding: 20px; backdrop-filter: blur(5px); }
+.modal-box { background: var(--card); padding: 30px; border-radius: 20px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+input, select, textarea { width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #ddd; background: #fafafa; font-family: inherit; }
+.btn-p { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+.btn-s { width: 100%; padding: 15px; background: #eee; color: #333; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+
+/* Cloudinary Upload Button */
+.upload-btn { background: #34495e; color: white; padding: 12px; border-radius: 10px; border: none; width: 100%; margin-bottom: 15px; cursor: pointer; font-weight: bold; }
+#preview-box { text-align: center; margin-bottom: 10px; display: none; }
+#preview-box img { width: 80px; height: 80px; border-radius: 10px; border: 2px solid var(--primary); object-fit: cover; }
+
+.tab-bar { position: fixed; bottom: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 10px; border-top: 1px solid #eee; z-index: 4000; }
+.tab-item { border: none; background: none; text-align: center; color: var(--sub); font-size: 11px; }
+</style>
+</head>
+<body>
+
+<div id="home-view">
+    <header>
+        <div class="nav-top">
+            <h2 style="margin:0; font-weight:900; letter-spacing:-1px;">SATAKSHI <span style="color:var(--primary)">PRO</span></h2>
+            <div style="display:flex; gap:15px;">
+                <button onclick="toggleTheme()" style="border:none; background:none; font-size:20px;">🌗</button>
+                <button onclick="openModal('login-modal')" style="border:none; background:none; font-size:20px;">👤</button>
+            </div>
+        </div>
+        <div class="search-wrapper">
+            <input type="text" id="mainSearch" placeholder="Search Camera, Mouse, Printer..." oninput="handleSearch()">
+            <span class="search-icon">🔍</span>
+        </div>
+    </header>
+
+    <div class="admin-only" style="background:var(--secondary); color:white; margin:15px; padding:25px; border-radius:20px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px; text-align:center;">
+            <div><b id="stat-profit" style="color:var(--primary); font-size:20px;">Rs. 0</b><br><span style="font-size:10px; opacity:0.7;">TOTAL PROFIT</span></div>
+            <div><b id="stat-items" style="color:var(--primary); font-size:20px;">0</b><br><span style="font-size:10px; opacity:0.7;">IN STOCK</span></div>
+        </div>
+        <button class="btn-p" onclick="openModal('add-modal')" style="background:var(--accent)">+ Add New Cloud Product</button>
+        <button class="btn-s" onclick="signOutAdmin()" style="background:rgba(255,255,255,0.1); color:white; font-size:12px; padding:8px;">Sign Out Admin</button>
+    </div>
+
+    <div class="hero-slider">
+        <div class="hero-text">
+            <h1>Gaming & Office<br>Peripherals</h1>
+            <p>Best price in Shivasatakshi-8, Jhiljhile.</p>
+        </div>
+        <img src="https://www.pngall.com/wp-content/uploads/2/Gaming-Mouse-PNG-Clipart.png" style="width:130px; position:absolute; right:10px; bottom:10px;">
+    </div>
+
+    <div class="categories-container">
+        <div class="cat-btn active" onclick="filterCat('All', this)"><div class="cat-img">🏠</div><span>All</span></div>
+        <div class="cat-btn" onclick="filterCat('Camera', this)"><div class="cat-img">📸</div><span>Camera</span></div>
+        <div class="cat-btn" onclick="filterCat('Mouse', this)"><div class="cat-img">🖱️</div><span>Mouse</span></div>
+        <div class="cat-btn" onclick="filterCat('Keyboard', this)"><div class="cat-img">⌨️</div><span>Keyboard</span></div>
+    </div>
+
+    <div id="product-list-main" class="product-grid"></div>
+    <div style="height:100px;"></div>
+</div>
+
+<div id="detail-overlay">
+    <div style="padding:15px; background:#fff; display:flex; align-items:center; gap:20px; border-bottom:1px solid #eee;">
+        <button onclick="closeDetail()" style="border:none; background:none; font-size:24px;">✕</button>
+        <b id="det-nav-name" style="font-size:14px;">Product Details</b>
+    </div>
+    <div style="background:#fff; text-align:center; padding:30px;"><img id="det-img" src="" style="max-width:80%; height:300px; object-fit:contain;"></div>
+    <div style="background:#fff; padding:25px;">
+        <div id="det-cat" style="color:var(--primary); font-size:12px; font-weight:800;">CATEGORY</div>
+        <h1 id="det-title" style="margin:0; font-size:20px; font-weight:700;">Product Title</h1>
+        <div id="det-price" style="font-size:28px; color:var(--primary); font-weight:800; margin-top:10px;">Rs. 0</div>
+        <p id="det-desc" style="color:#555; line-height:1.6; font-size:14px; margin-top:15px;"></p>
+        <button class="btn-p" id="det-buy-btn" style="margin-top:20px;">Order on WhatsApp</button>
+    </div>
+</div>
+
+<div id="add-modal" class="modal">
+    <div class="modal-box">
+        <h2 style="margin-top:0;">Add to Inventory</h2>
+        
+        <button type="button" id="upload_widget" class="upload-btn">📸 Upload Product Image</button>
+        <div id="preview-box"><img id="img-preview" src=""></div>
+        <input type="hidden" id="p-img"> <select id="p-cat">
+            <option value="Camera">Camera</option>
+            <option value="Mouse">Mouse</option>
+            <option value="Keyboard">Keyboard</option>
+            <option value="Printer">Printer</option>
+        </select>
+        <input id="p-name" placeholder="Item Name">
+        <input type="number" id="p-cp" placeholder="Cost Price (Private)">
+        <input type="number" id="p-sp" placeholder="Selling Price (Public)">
+        <textarea id="p-desc" placeholder="Product Description..." rows="3"></textarea>
+        
+        <button class="btn-p" onclick="saveProduct()">Publish to Shop</button>
+        <button onclick="closeModal('add-modal')" class="btn-s">Cancel</button>
+    </div>
+</div>
+
+<div id="login-modal" class="modal">
+    <div class="modal-box">
+        <h2>Admin Access</h2>
+        <input type="password" id="admin-key" placeholder="Enter Secret Key">
+        <button class="btn-p" onclick="adminLogin()">Login</button>
+        <button onclick="closeModal('login-modal')" class="btn-s">Close</button>
+    </div>
+</div>
+
+<nav class="tab-bar">
+    <button class="tab-item active">🏠<br>Home</button>
+    <button class="tab-item" onclick="openModal('login-modal')">🛡️<br>Admin</button>
+</nav>
+
+<script>
+/* --- CONFIGURATION --- */
+const cloudName = "dalq881qy"; 
+const uploadPreset = "ml_default"; 
+
+let allProducts = JSON.parse(localStorage.getItem('satakshi_pro_data')) || [];
+let currentFilter = "All";
+
+// --- CLOUDINARY WIDGET ---
+const myWidget = cloudinary.createUploadWidget({
+    cloudName: cloudName, 
+    uploadPreset: uploadPreset
+}, (error, result) => { 
+    if (!error && result && result.event === "success") { 
+        document.getElementById('p-img').value = result.info.secure_url;
+        document.getElementById('img-preview').src = result.info.secure_url;
+        document.getElementById('preview-box').style.display = 'block';
+    }
+});
+document.getElementById("upload_widget").addEventListener("click", () => myWidget.open(), false);
+
+// --- CORE FUNCTIONS ---
+function saveProduct() {
+    const p = {
+        id: Date.now(),
+        name: document.getElementById('p-name').value,
+        cat: document.getElementById('p-cat').value,
+        img: document.getElementById('p-img').value || 'https://via.placeholder.com/200',
+        cp: parseFloat(document.getElementById('p-cp').value) || 0,
+        sp: parseFloat(document.getElementById('p-sp').value) || 0,
+        desc: document.getElementById('p-desc').value
+    };
+    if(!p.name || !p.sp) return alert("Fill Name and Price!");
+    
+    allProducts.unshift(p);
+    localStorage.setItem('satakshi_pro_data', JSON.stringify(allProducts));
+    renderGrid();
+    closeModal('add-modal');
+    // Reset Form
+    document.getElementById('p-name').value = "";
+    document.getElementById('p-img').value = "";
+    document.getElementById('preview-box').style.display = 'none';
+}
+
+function renderGrid(data = allProducts) {
+    const container = document.getElementById('product-list-main');
+    container.innerHTML = "";
+    let profit = 0;
+    
+    const filtered = currentFilter === "All" ? data : data.filter(p => p.cat === currentFilter);
+    
+    filtered.forEach(p => {
+        profit += (p.sp - p.cp);
+        const div = document.createElement('div');
+        div.className = "product-card";
+        div.innerHTML = `
+            <div class="img-holder"><img src="${p.img}"></div>
+            <div class="product-info">
+                <h3>${p.name}</h3>
+                <span class="product-price">Rs. ${p.sp}</span>
+                <div class="admin-only" style="margin-top:10px; border-top:1px dashed #ddd; padding-top:5px;">
+                    <b style="color:var(--green); font-size:11px;">Profit: Rs.${p.sp - p.cp}</b><br>
+                    <button onclick="event.stopPropagation(); deleteProduct(${p.id})" style="color:red; background:none; border:none; font-size:10px;">[DELETE]</button>
+                </div>
+            </div>
+        `;
+        div.onclick = () => openDetail(p);
+        container.appendChild(div);
+    });
+    document.getElementById('stat-profit').innerText = "Rs. " + profit;
+    document.getElementById('stat-items').innerText = filtered.length;
+}
+
+function deleteProduct(id) {
+    if(confirm("Delete this item?")) {
+        allProducts = allProducts.filter(p => p.id !== id);
+        localStorage.setItem('satakshi_pro_data', JSON.stringify(allProducts));
+        renderGrid();
+    }
+}
+
+function openDetail(p) {
+    document.getElementById('det-img').src = p.img;
+    document.getElementById('det-title').innerText = p.name;
+    document.getElementById('det-price').innerText = "Rs. " + p.sp;
+    document.getElementById('det-desc').innerText = p.desc || "High-quality professional peripheral.";
+    document.getElementById('det-buy-btn').onclick = () => {
+        window.open(`https://wa.me/9824996325?text=Hello, I want to purchase ${p.name}`);
+    };
+    document.getElementById('detail-overlay').classList.add('open');
+}
+
+function adminLogin() {
+    if(document.getElementById('admin-key').value === "9824") {
+        document.body.classList.add('is-admin');
+        closeModal('login-modal');
+    } else { alert("Wrong Password!"); }
+}
+
+function signOutAdmin() { document.body.classList.remove('is-admin'); }
+function filterCat(cat, btn) {
+    currentFilter = cat;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderGrid();
+}
+function handleSearch() {
+    const q = document.getElementById('mainSearch').value.toLowerCase();
+    const matches = allProducts.filter(p => p.name.toLowerCase().includes(q));
+    renderGrid(matches);
+}
+
+const openModal = id => document.getElementById(id).style.display = 'flex';
+const closeModal = id => document.getElementById(id).style.display = 'none';
+const closeDetail = () => document.getElementById('detail-overlay').classList.remove('open');
+const toggleTheme = () => document.body.classList.toggle('dark-theme');
+
+renderGrid();
+</script>
+</body>
+</html>
